@@ -1,10 +1,10 @@
 import './App.scss'
 import Home from '../facilityHome/home';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import Login from '../login/login';
-import ModalWrapper from '../../modals/modal-wrapper';
 import { FacilityContext } from '../../providers/facility-provider';
 import NewFacility from '../new-facility/new-facility';
+import BasicModal from '../../modals/basic-modal';
 
 
 export default function App() {
@@ -30,11 +30,6 @@ export default function App() {
     setShowLogInModal(false)
   }
 
-  // useEffect(() => {
-  //   logAllFacilities();
-  //   getFacilityFromId('O4MVvp03NUIeCBCiO4Hs');
-  // })
-
 
   return (
     <main>
@@ -49,23 +44,21 @@ export default function App() {
           </div>
           <div>
             {showLogInModal &&
-              <ModalWrapper
-                title='Facility Login' 
-                children={<Login/>} 
-                backEnabled={false} 
-                closeOnTapOutside={false}   
-                onCloseClicked={() => setShowLogInModal(false)}           
+              <BasicModal
+                headingText='Facility Login'
+                bodyText={<Login/>}
+                openModal={showLogInModal}
+                closeModal={() => setShowLogInModal(false)}
               />
             }
           </div>
           <div>
             {showCreateFacilityModal &&
-              <ModalWrapper
-                title='Create Facility' 
-                children={<NewFacility/>} 
-                backEnabled={false} 
-                closeOnTapOutside={false}
-                onCloseClicked={() => setShowCreateFacilityModal(false)}             
+              <BasicModal
+                headingText='New Facility'
+                bodyText={<NewFacility/>}
+                openModal={showCreateFacilityModal}
+                closeModal={() => setShowCreateFacilityModal(false)}
               />
             }
           </div>
