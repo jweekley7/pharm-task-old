@@ -1,9 +1,7 @@
-import * as React from 'react';
+
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { useState } from 'react';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -31,9 +29,6 @@ export const BasicModal = (props: BasicModalType) => {
     openModal,
     closeModal,
   } = props;
-  // const [open, setOpen] = useState(true);
-  // const handleOpen = () => setOpen(true);
-  // const handleClose = () => setOpen(false);
 
   return (
     <div>
