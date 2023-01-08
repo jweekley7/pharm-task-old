@@ -28,17 +28,17 @@ type AuthProviderProps = {
 type AuthContextProps = {
   // DBFirebaseApp: FirebaseApp;
   // DBFirebaseDB: Firestore;
-  // DBAuth: Auth;
+  DBAuth: Auth;
   // isLoggedIn: boolean;
   // logOut: () => Promise<void>;
   // currentUser: User | null;
   // isUserProfileComplete: (user: User) => Promise<boolean>;
   // getUserLoginMethods: (loginEmail: string) => Promise<string[]>;
   // signInWithGoogle: () => void;
-  // signupWithEmailAndPasssword: (
-  //   email: string,
-  //   password: string
-  // ) => Promise<UserCredential>;
+  signupWithEmailAndPasssword: (
+    email: string,
+    password: string
+  ) => Promise<UserCredential>;
   // loginWithEmailAndPasssword: (
   //   email: string,
   //   password: string
@@ -57,6 +57,8 @@ export const AuthContext = React.createContext({} as AuthContextProps);
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentFacility, setCurrentFacility] = useState<iFacility | null>(null);
+  const DBAuth = getAuth();
+  const googleAuthProvider = new GoogleAuthProvider();
   // const [isFacilityLoggedIn, setIsFacilityLoggedIn] = useState(false);
   
   // const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -90,11 +92,57 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   //   updateLoginStatus(signinCreds.user);
   //   return signinCreds;
   // };
+
+  const signupWithEmailAndPasssword = async (
+    email: string,
+    password: string
+  ) => {
+    return await createUserWithEmailAndPassword(DBAuth, email, password);
+  };
+
+  const getUserLoginMethods = async (loginEmail: string): Promise<string[]> => {
+    if (loginEmail) {
+      const loginMethods = await fetchSignInMethodsForEmail(DBAuth, loginEmail);
+      return loginMethods;
+    }
+    return [];
+  };
+
+  const signInWithGoogle = async () => {
+    // await signInWithPopup(DBAuth, googleAuthProvider);
+    try {
+      await signInWithRedirect(DBAuth, googleAuthProvider);
+    } catch (error) {
+      console.log('error in signInWithGoogle', error);
+    }
+  };
+
+  // const updateLoginStatus = async (user: User) => {
+  //   setCurrentUser(user);
+  //   if (user?.email) {
+  //     if (!userDetails) {
+  //       const userProfile = await isUserProfileComplete(user);
+  //       if (userProfile) {
+  //         setIsLoggedIn(true);
+  //       } else {
+  //         setIsLoggedIn(false);
+  //       }
+  //     } else {
+  //       setIsLoggedIn(true);
+  //       // saveUserToken(userDetails);
+  //     }
+  //   } else {
+  //     setIsLoggedIn(false);
+  //   }
+
+  // };
   
   return (
     <AuthContext.Provider
       value={{
         //currentFacility,
+        DBAuth,
+        signupWithEmailAndPasssword,
       }}
     >
       {children}
