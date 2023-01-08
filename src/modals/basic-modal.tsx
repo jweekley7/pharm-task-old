@@ -1,7 +1,8 @@
-
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -20,6 +21,8 @@ type BasicModalType = {
   bodyText: any;
   openModal: boolean;
   closeModal: () => void;
+  backEnabled?: boolean;
+  onBackClicked?: () => void;
 }
 
 export const BasicModal = (props: BasicModalType) => {
@@ -39,9 +42,18 @@ export const BasicModal = (props: BasicModalType) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            {headingText}
-          </Typography>
+          <div className='flex justify-between items-center'>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              {headingText}
+            </Typography>
+            <IconButton
+              aria-label="close-modal-x-button"
+              onClick={() => closeModal()}
+              edge="end"
+            >
+              <CloseIcon/>
+            </IconButton>       
+          </div>         
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {bodyText}
           </Typography>
