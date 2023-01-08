@@ -1,5 +1,8 @@
+import { userRoles } from "../utils/constants";
+
 export interface iUser {
-  admin: boolean,
-  superAdmin: boolean,
+  role: userRoles,
   userEmail: string,
+  id: string,
+  fullName: string,
 }
