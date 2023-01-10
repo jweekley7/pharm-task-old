@@ -11,6 +11,7 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signInWithRedirect,
   signOut,
   User,
@@ -20,6 +21,7 @@ import {
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from "firebase/firestore";
 import { iUser } from "../models/user";
+import { UserService } from "../services/user-service";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -29,12 +31,12 @@ type AuthContextProps = {
   // DBFirebaseApp: FirebaseApp;
   // DBFirebaseDB: Firestore;
   DBAuth: Auth;
-  // isLoggedIn: boolean;
-  // logOut: () => Promise<void>;
-  // currentUser: User | null;
+  isLoggedIn: boolean;
+  userLogOut: () => Promise<void>;
+  currentUser: User | null;
   // isUserProfileComplete: (user: User) => Promise<boolean>;
   // getUserLoginMethods: (loginEmail: string) => Promise<string[]>;
-  // signInWithGoogle: () => void;
+  // signInWithGoogle: () => Promise<void>;
   signupWithEmailAndPasssword: (
     email: string,
     password: string
@@ -46,8 +48,8 @@ type AuthContextProps = {
   // sendResetPasswordEmail: (email: string) => Promise<void>;
   // verifyResetPasswordCode: (code: string) => Promise<string>;
   // resetPassword: (code: string, password: string) => Promise<void>;
-  // updateLoginStatus: (user: User) => Promise<void>;
-  // userDetails: iUser | null;
+  updateLoginStatus: (user: User) => Promise<void>;
+  userDetails: iUser | null;
   // getUserRole: () => void;
   // superAdminStatus: boolean;
   // leagueOwnerStatus: boolean;
@@ -59,26 +61,27 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentFacility, setCurrentFacility] = useState<iFacility | null>(null);
   const DBAuth = getAuth();
   const googleAuthProvider = new GoogleAuthProvider();
-  // const [isFacilityLoggedIn, setIsFacilityLoggedIn] = useState(false);
+  const [isFacilityLoggedIn, setIsFacilityLoggedIn] = useState(false);
+  const userService = new UserService();
   
-  // const [currentUser, setCurrentUser] = useState<User | null>(null);
-  // const [userDetails, setUserDetails] = useState<iUser | null>(null);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [userDetails, setUserDetails] = useState<iUser | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const [superAdminStatus, setSuperAdminStatus] = useState(false);
   // const [leagueOwnerStatus, setLeagueOwnerStatus] = useState(false);
   
-  // const facilityLogOut = async () => {
-  //   await userLogOut();
-  //   setCurrentFacility(null);
-  //   setIsFacilityLoggedIn(false);
-  // }
+  const facilityLogOut = async () => {
+    await userLogOut();
+    setCurrentFacility(null);
+    setIsFacilityLoggedIn(false);
+  }
   
-  // const userLogOut = async () => {
-  //   await signOut(DBAuth);
-  //   setIsLoggedIn(false);
-  //   setCurrentUser(null);
-  //   setUserDetails(null);
-  // };
+  const userLogOut = async () => {
+    await signOut(DBAuth);
+    setIsLoggedIn(false);
+    setCurrentUser(null);
+    setUserDetails(null);
+  };
 
   // const loginWithEmailAndPasssword = async (
   //   email: string,
@@ -108,41 +111,96 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     return [];
   };
 
-  const signInWithGoogle = async () => {
-    // await signInWithPopup(DBAuth, googleAuthProvider);
-    try {
-      await signInWithRedirect(DBAuth, googleAuthProvider);
-    } catch (error) {
-      console.log('error in signInWithGoogle', error);
+  onAuthStateChanged(DBAuth, (user) => {
+    console.log('onAuthStateChanged2 running');
+    if (user) {
+      setIsLoggedIn(true);
+      setCurrentUser(user);
+      console.log('user logged in');
+      //does user already exist on db?
+    } else {
+      setIsLoggedIn(false);
+      setCurrentUser(null);
     }
+  });
+
+  // const signInWithGoogle = async () => {
+
+  //   try {
+  //     const userCredentials = await signInWithPopup(DBAuth, googleAuthProvider);
+
+  //     // if (userCredentials) {
+  //     //   console.log('user = '+ userCredentials.user.email) 
+  //     //   onAuthStateChanged(DBAuth, async () => {
+  //     //     console.log('onAuthStateChanged running');
+  //     //     if (userCredentials.user) {
+  //     //       await updateLoginStatus(userCredentials.user)
+  //     //     };        
+  //     //   });
+             
+  //     // }
+
+  //   } catch (error) {
+  //     console.log('Trouble signing in with Google popup: ', error)
+  //   }
+    
+  //   // try {
+  //   //   await signInWithRedirect(DBAuth, googleAuthProvider);
+  //   // } catch (error) {
+  //   //   console.log('error in signInWithGoogle', error);
+  //   // }
+  // };
+
+  const isUserProfileComplete = async (user: User): Promise<boolean> => {
+    if (DBAuth?.currentUser && user?.email) {
+      const userProfile = await userService.getUserByEmail(user.email);
+      if (userProfile) {
+        setUserDetails({ ...userProfile });
+        return true;
+      }
+    }
+    return false;
   };
 
-  // const updateLoginStatus = async (user: User) => {
-  //   setCurrentUser(user);
-  //   if (user?.email) {
-  //     if (!userDetails) {
-  //       const userProfile = await isUserProfileComplete(user);
-  //       if (userProfile) {
-  //         setIsLoggedIn(true);
-  //       } else {
-  //         setIsLoggedIn(false);
-  //       }
-  //     } else {
-  //       setIsLoggedIn(true);
-  //       // saveUserToken(userDetails);
-  //     }
-  //   } else {
-  //     setIsLoggedIn(false);
-  //   }
+  // onAuthStateChanged(DBAuth, async (user) => {
+  //   if (user) await updateLoginStatus(user);
+  //   console.log('auth running')
+  // });
 
-  // };
+  const updateLoginStatus = async (user: User) => {
+    console.log('updateLoginStatus running')
+    setCurrentUser(user);
+    console.log('currentUser = ' + currentUser?.email)
+    if (user?.email) {
+      if (!userDetails) {
+        const userProfile = await isUserProfileComplete(user);
+        if (userProfile) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } else {
+        setIsLoggedIn(true);
+        // saveUserToken(userDetails);
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+
+  };
   
   return (
     <AuthContext.Provider
       value={{
         //currentFacility,
         DBAuth,
+        currentUser,
         signupWithEmailAndPasssword,
+        updateLoginStatus,
+        userDetails,
+        isLoggedIn,
+        // signInWithGoogle,
+        userLogOut,
       }}
     >
       {children}
