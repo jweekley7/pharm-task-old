@@ -5,4 +5,5 @@ export interface iChecklist {
 export interface iChecklistData {
   checklistName: string;
   checklistItem: string;
+  //Is an ID for each item needed?
 }
