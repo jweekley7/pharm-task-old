@@ -1,3 +1,4 @@
+import { User } from 'firebase/auth';
 import {
   collection,
   query,
@@ -5,6 +6,7 @@ import {
   getDocs,
   doc,
   setDoc,
+  addDoc,
 } from 'firebase/firestore';
 import { iUser } from '../models/user';
 import { DBCollections } from '../utils/constants';
@@ -40,8 +42,15 @@ export class UserService {
       ? doc(this._DBUsersCollection, userId)
       : doc(this._DBUsersCollection);
 
-    userDetails.id = userRef.id;
+    userDetails.userId = userRef.id;
 
     return await setDoc(userRef, userDetails);
+  }
+
+  public async addUserToDb(user: User) {
+    await addDoc(this._DBUsersCollection, {
+      userEmail: user.email,
+      fullName: user.displayName,
+    });
   }
 }
