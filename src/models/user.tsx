@@ -1,8 +1,15 @@
 import { userRoles } from "../utils/constants";
 
 export interface iUser {
-  role: userRoles,
-  userEmail: string,
-  userId: string,
-  fullName: string,
+  role: userRoles; //QUESTION: What if a user is admin for one place but not another?
+  userEmail: string;
+  userId: string;
+  fullName: string;
+  facilities: iFacility[];
+  userSigningCredentials: iUserSigningCredentials;
+}
+
+export interface iUserSigningCredentials {
+  userID: string;
+  userPin: number;
 }
