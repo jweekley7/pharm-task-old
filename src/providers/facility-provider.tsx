@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { iFacility } from "../models/facility";
+import { iUser } from "../models/user";
 import { FacilityService } from "../services/facility-service";
 
 type FacilityProviderProps = {
@@ -8,9 +9,9 @@ type FacilityProviderProps = {
 
 type FacilityContextProps = {
   currentFacility?: iFacility;
-  doesFacilityExist: (facilityName?: string) => Promise<boolean>
+  doesFacilityAlreadyExist: (facilityName?: string) => Promise<boolean>
   getFacilityFromId: (facilityId: string) => Promise<void>;
-  doesAdminUserExistOnAnyFacility: (userEmail: string) => Promise<{
+  doesAdminUserExistOnAnyFacility: (user: iUser) => Promise<{
     userMatch: boolean;
     userFacilities: string[];
   }>
@@ -27,7 +28,7 @@ const FacilityProvider = ({ children }: FacilityProviderProps) => {
     setCurrentFacility(facility);
   }
 
-  const doesFacilityExist = async (facilityName?: string) => {
+  const doesFacilityAlreadyExist = async (facilityName?: string) => {
     const allFacilities = await _facilityService.getAllFacilitiesFromDB();
     let facilityMatch = false;
     allFacilities.forEach((facility) => {
@@ -38,12 +39,12 @@ const FacilityProvider = ({ children }: FacilityProviderProps) => {
     return facilityMatch
   };
 
-  const doesAdminUserExistOnAnyFacility = async (userEmail: string) => {
+  const doesAdminUserExistOnAnyFacility = async (user: iUser) => {
     const allFacilities = await _facilityService.getAllFacilitiesFromDB();
     let userMatch = false;
     const userFacilities: string[] = [];
     allFacilities.forEach((facility) => {
-      if (facility.facilityAdmin.includes(userEmail)) {
+      if (facility.facilityAdmin.includes(user)) {
         userMatch = true;
         userFacilities.push(facility.facilityName)
       }
@@ -56,7 +57,7 @@ const FacilityProvider = ({ children }: FacilityProviderProps) => {
     <FacilityContext.Provider
       value={{
         currentFacility,
-        doesFacilityExist,
+        doesFacilityAlreadyExist,
         getFacilityFromId,
         doesAdminUserExistOnAnyFacility,
       }}
