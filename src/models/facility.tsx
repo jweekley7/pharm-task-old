@@ -6,7 +6,7 @@ export interface iFacility {
   facilityName: string;
   logOnID: string;
   logOnPassWord: string;
-  facilityAdmin: string[]; //string of emails or ids?
+  facilityAdmin: string[]; //QUESTION: string of emails or ids?
   checklist: iChecklist[];
   users: iUser[];
 }
