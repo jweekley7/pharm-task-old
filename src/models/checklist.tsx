@@ -3,7 +3,12 @@ export interface iChecklist {
 }
 
 export interface iChecklistData {
-  checklistName: string;
-  checklistItem: string;
-  //Is an ID for each item needed?
+  checklistName: string; //This is for multiple "rooms" in each facility
+  checklistId: string;
+  checklistItems: iChecklistItem[];
+}
+
+export interface iChecklistItem {
+  itemName: string;
+  timeStamp: Date; //QUESTION: or string?
 }
