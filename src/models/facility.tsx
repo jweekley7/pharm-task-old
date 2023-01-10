@@ -8,5 +8,5 @@ export interface iFacility {
   logOnPassWord: string;
   facilityAdmin: string[]; //string of emails or ids?
   checklist: iChecklist[];
-  users: iUser[]
+  users: iUser[];
 }
