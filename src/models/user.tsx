@@ -1,4 +1,5 @@
 import { userRoles } from "../utils/constants";
+import { iFacility } from "./facility";
 
 export interface iUser {
   role: userRoles; //QUESTION: What if a user is admin for one place but not another?

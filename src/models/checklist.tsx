@@ -1,4 +1,4 @@
-import { iUser } from './user.tsx';
+import { iUser } from './user';
 
 export interface iChecklist {
   [key: string]: iChecklistData;  //key is auto assigned ID from firebase

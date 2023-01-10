@@ -1,5 +1,5 @@
-import { iChecklist } from './checklist.tsx';
-import { iUser } from './user.tsx';
+import { iChecklist } from './checklist';
+import { iUser } from './user';
 
 export interface iFacility {
   facilityId: string;
