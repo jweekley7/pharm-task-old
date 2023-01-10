@@ -114,7 +114,7 @@ export const Signup = (props: SignupProps) => {
 
   const handleGoogleLoginClick = async () => {
     try {
-      // await signInWithGoogle();
+      await signInWithGoogle();
 
       if (isLoggedIn) {
         console.log('now = ' + isLoggedIn)
@@ -330,7 +330,6 @@ export const Signup = (props: SignupProps) => {
                     <Button
                       variant="contained"
                       onClick={async () => {
-                        //setAuthLoading(true);
                         await handleGoogleLoginClick();
 
                       }}
@@ -339,7 +338,7 @@ export const Signup = (props: SignupProps) => {
                       <span
                         className='pl-2'
                       >
-                        Sign un with Google
+                        Sign up with Google
                       </span>
                     </Button>
                   </div>

@@ -126,7 +126,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signInWithGoogle = async () => {
     try {
-      const userCredentials = await signInWithPopup(DBAuth, googleAuthProvider);
+      await signInWithPopup(DBAuth, googleAuthProvider);
 
     } catch (error) {
       console.log('Trouble signing in with Google popup: ', error)
