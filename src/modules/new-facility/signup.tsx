@@ -3,6 +3,7 @@ import { AuthContext } from '../../providers/auth-provider';
 import { UserService } from '../../services/user-service';
 import { iUser } from '../../models/user';
 import { Link, useLocation, useNavigate, Location } from 'react-router-dom';
+import GoogleIcon from '@mui/icons-material/Google';
 
 import {
   EmailAuthProvider,
@@ -38,7 +39,7 @@ export const Signup = (props: SignupProps) => {
   const [password, setPassword] = useState<string | undefined>();
   const [fullName, setFullName] = useState<string>();
   const [termsAgreed, setTermsAgreed] = useState<boolean>(false);
-  const [confirmPasssword, setConfirmPassswordl] = useState<
+  const [confrmPassword, setConfirmPassword] = useState<
     string | undefined
   >();
   const [signupLoading, setSignupLoading] = useState(false);
@@ -111,6 +112,26 @@ export const Signup = (props: SignupProps) => {
     }
   };
 
+  const handleGoogleLoginClick = async () => {
+    try {
+      // await signInWithGoogle();
+
+      if (isLoggedIn) {
+        console.log('now = ' + isLoggedIn)
+      }
+
+      try {
+        console.log('user logged in')
+        
+      } catch (error) {
+        console.log('Trouble confirming login: ', error)
+      }
+
+    } catch (error) {
+      console.log('Trouble logging in with google: ', error);
+    }
+  }
+
   // const navigateToCorrectPage = async () => {
   //   if (isLoggedIn) {
   //     const redirectUrl = localStorage.getItem('rTo');
@@ -131,6 +152,15 @@ export const Signup = (props: SignupProps) => {
   const cancelSignUp = () => {
     cancelClicked && cancelClicked()
   }
+
+  const cancelEmailPasswordSignup = () => {
+    setLoginWithEmailAndPassword(false);
+    setLoginWithGoogle(false);
+  }
+
+  useEffect(() => {
+    console.log('isLoggedIn = ' + isLoggedIn)
+  })
 
   return (
     <div>
@@ -202,7 +232,7 @@ export const Signup = (props: SignupProps) => {
                     label="Facility Password"
                     type={showPassword ? 'text' : 'password'}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                      setConfirmPassswordl(event.target.value);
+                      setPassword(event.target.value);
                     }}
                     InputProps={{
                       endAdornment: (
@@ -221,19 +251,30 @@ export const Signup = (props: SignupProps) => {
                     variant="filled"
                     fullWidth={true}
                   />
-                  
-                  {/* <PasswordInput
-                    placeholder="Password"
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                      setPassword(event.target.value);
-                    }}
-                  /> */}
                   <TextField
-                    placeholder="Confirm Password"
-                    type={'password'}
+                    required
+                    id="filled-required"
+                    label="Confirm Password"
+                    type={showPassword ? 'text' : 'password'}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                      setConfirmPassswordl(event.target.value);
+                      setConfirmPassword(event.target.value);
                     }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    variant="filled"
+                    fullWidth={true}
                   />
                   {/* <Checkbox
                     label={
@@ -249,42 +290,67 @@ export const Signup = (props: SignupProps) => {
                       setTermsAgreed(e.target.checked);
                     }}
                   /> */}
-                  <div className="flex justify-end pt-2">
-                    <Button 
-                      variant="contained" 
-                      type='submit'
-                      disabled={
-                        !userEmail ||
-                        !password ||
-                        password !== confirmPasssword //||
-                        // !termsAgreed
-                      }
-                      onClick={() => {
-                        setSignupLoading(true);
-                        addUser();
-                      }}
-                    >
-                      LogIn
-                    </Button>
+                  <div className='flex justify-between'>
+                    <div className="flex justify-start pt-2">
+                      <Button 
+                        variant="contained" 
+                        type='submit'
+                        disabled={
+                          !userEmail ||
+                          !password ||
+                          password !== confrmPassword //||
+                          // !termsAgreed
+                        }
+                        onClick={() => {
+                          setSignupLoading(true);
+                          addUser();
+                        }}
+                      >
+                        LogIn
+                      </Button>
+                    </div>
+                    <div className='flex justify-end'>
+                      <Button
+                        onClick={() => cancelEmailPasswordSignup()}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
                   </div>
-                  <div className='flex justify-end'>
-                    <Button
-                      onClick={() => cancelSignUp()}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
+                  
                 </form>
               )}
             </div>
             <div>
               {!loginWithEmailAndPassword && loginWithGoogle && (
-                <Button
-                  onClick={() => {
-                    //setAuthLoading(true);
-                    signInWithGoogle();
-                  }}
-                />
+                <div className='flex flex-col'>
+                  <div
+                    className='flex justify-center'
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={async () => {
+                        //setAuthLoading(true);
+                        await handleGoogleLoginClick();
+
+                      }}
+                    >
+                      <GoogleIcon></GoogleIcon>
+                      <span
+                        className='pl-2'
+                      >
+                        Sign un with Google
+                      </span>
+                    </Button>
+                  </div>
+                  <div className='flex justify-end'>
+                    <Button
+                      onClick={() => cancelEmailPasswordSignup()}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
               )}
             </div>
           </div>

@@ -36,7 +36,7 @@ type AuthContextProps = {
   currentUser: User | null;
   // isUserProfileComplete: (user: User) => Promise<boolean>;
   // getUserLoginMethods: (loginEmail: string) => Promise<string[]>;
-  // signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signupWithEmailAndPasssword: (
     email: string,
     password: string
@@ -124,32 +124,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   });
 
-  // const signInWithGoogle = async () => {
+  const signInWithGoogle = async () => {
+    try {
+      const userCredentials = await signInWithPopup(DBAuth, googleAuthProvider);
 
-  //   try {
-  //     const userCredentials = await signInWithPopup(DBAuth, googleAuthProvider);
-
-  //     // if (userCredentials) {
-  //     //   console.log('user = '+ userCredentials.user.email) 
-  //     //   onAuthStateChanged(DBAuth, async () => {
-  //     //     console.log('onAuthStateChanged running');
-  //     //     if (userCredentials.user) {
-  //     //       await updateLoginStatus(userCredentials.user)
-  //     //     };        
-  //     //   });
-             
-  //     // }
-
-  //   } catch (error) {
-  //     console.log('Trouble signing in with Google popup: ', error)
-  //   }
-    
-  //   // try {
-  //   //   await signInWithRedirect(DBAuth, googleAuthProvider);
-  //   // } catch (error) {
-  //   //   console.log('error in signInWithGoogle', error);
-  //   // }
-  // };
+    } catch (error) {
+      console.log('Trouble signing in with Google popup: ', error)
+    }
+  };
 
   const isUserProfileComplete = async (user: User): Promise<boolean> => {
     if (DBAuth?.currentUser && user?.email) {
@@ -199,7 +181,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         updateLoginStatus,
         userDetails,
         isLoggedIn,
-        // signInWithGoogle,
+        signInWithGoogle,
         userLogOut,
       }}
     >
