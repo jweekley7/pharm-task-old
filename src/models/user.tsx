@@ -6,4 +6,10 @@ export interface iUser {
   userId: string;
   fullName: string;
   facilities: iFacility[];
+  userSigningCredentials: iUserSigningCredentials;
+}
+
+export interface iUserSigningCredentials {
+  userID: string;
+  userPin: number;
 }
