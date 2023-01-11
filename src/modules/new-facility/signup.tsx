@@ -1,8 +1,8 @@
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, useContext, useState } from 'react';
 import { AuthContext } from '../../providers/auth-provider';
 import { UserService } from '../../services/user-service';
 import { iUser } from '../../models/user';
-import { Link, useLocation, useNavigate, Location } from 'react-router-dom';
+// import { Link, useLocation, useNavigate, Location } from 'react-router-dom';
 import { GoogleSignInButton } from '../../components/ui/google-sign-in-button';
 import {
   EmailAuthProvider,
@@ -10,9 +10,9 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
-import { Button, ButtonGroup, IconButton, InputAdornment, TextField } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Button, ButtonGroup, TextField } from '@mui/material';
 import { userRoles } from '../../utils/constants';
+import { NewPassword } from '../../components/ui/new-password';
 
 type SignupProps = {
   adminUser?: boolean,
@@ -34,27 +34,16 @@ export const Signup = (props: SignupProps) => {
   //const { state }: Location = useLocation();
   //const { mEmail }: any = state;
   const [userEmail, setUserEmail] = useState<string>(); //mEmail as default state
-  const [profilePic, setProfilePic] = useState<File | undefined>();
-  const [password, setPassword] = useState<string | undefined>();
+  //const [profilePic, setProfilePic] = useState<File | undefined>();
   const [fullName, setFullName] = useState<string>();
-  const [termsAgreed, setTermsAgreed] = useState<boolean>(false);
-  const [confrmPassword, setConfirmPassword] = useState<
-    string | undefined
-  >();
-  const [signupLoading, setSignupLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  //const [termsAgreed, setTermsAgreed] = useState<boolean>(false);
+  const [passwordConfirmed, setPasswordConfirmed] = useState<boolean>(false);
+  const [signupLoading, setSignupLoading] = useState(false);  //TODO: add loading?
   const [role, setRole] = useState<userRoles>(userRoles.basicUser);
   const [userId, setUserId] = useState<string>();
   const [loginWithEmailAndPassword, setLoginWithEmailAndPassword] = useState<boolean>();
   const [loginWithGoogle, setLoginWithGoogle] = useState<boolean>();
-
-  const handleClickShowPassword = () => {
-    setShowPassword((show) => !show)
-  };
-
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
+  const [password, setPassword] = useState<string>();
 
   const addUser = async () => {
     if (userEmail && password) {
@@ -111,26 +100,6 @@ export const Signup = (props: SignupProps) => {
     }
   };
 
-  // const handleGoogleLoginClick = async () => {
-  //   try {
-  //     await signInWithGoogle();
-
-  //     if (isLoggedIn) {
-  //       console.log('now = ' + isLoggedIn)
-  //     }
-
-  //     try {
-  //       console.log('user logged in')
-        
-  //     } catch (error) {
-  //       console.log('Trouble confirming login: ', error)
-  //     }
-
-  //   } catch (error) {
-  //     console.log('Trouble logging in with google: ', error);
-  //   }
-  // }
-
   // const navigateToCorrectPage = async () => {
   //   if (isLoggedIn) {
   //     const redirectUrl = localStorage.getItem('rTo');
@@ -156,10 +125,6 @@ export const Signup = (props: SignupProps) => {
     setLoginWithEmailAndPassword(false);
     setLoginWithGoogle(false);
   }
-
-  useEffect(() => {
-    console.log('isLoggedIn = ' + isLoggedIn)
-  })
 
   return (
     <div>
@@ -212,12 +177,14 @@ export const Signup = (props: SignupProps) => {
                   }}
                 >
                   <TextField
+                    required
                     placeholder="Fullname"
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
                       setFullName(event.target.value);
                     }}
                   />
                   <TextField
+                    required
                     placeholder="Email address"
                     value={userEmail}
                     type="email"
@@ -225,57 +192,12 @@ export const Signup = (props: SignupProps) => {
                       setUserEmail(event.target.value);
                     }}
                   />
-                  <TextField
-                    required
-                    id="filled-required"
-                    label="Facility Password"
-                    type={showPassword ? 'text' : 'password'}
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                      setPassword(event.target.value);
-                    }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    variant="filled"
-                    fullWidth={true}
+                  <NewPassword 
+                    isPasswordConfirmed={setPasswordConfirmed}
+                    getPassword={setPassword}
                   />
-                  <TextField
-                    required
-                    id="filled-required"
-                    label="Confirm Password"
-                    type={showPassword ? 'text' : 'password'}
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                      setConfirmPassword(event.target.value);
-                    }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    variant="filled"
-                    fullWidth={true}
-                  />
-                  {/* <Checkbox
+                  {//TODO: need this?
+                    /* <Checkbox
                     label={
                       <span>
                         I agree to{' '}
@@ -296,8 +218,8 @@ export const Signup = (props: SignupProps) => {
                         type='submit'
                         disabled={
                           !userEmail ||
-                          !password ||
-                          password !== confrmPassword //||
+                          !fullName ||
+                          !passwordConfirmed //||
                           // !termsAgreed
                         }
                         onClick={() => {
