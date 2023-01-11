@@ -26,6 +26,7 @@ export const NewFacility = (props: NewFacilityProps) => {
   const [facilityPassword, setFacilityPassword] = useState<string>();
   const [facilityName, setFacilityName] = useState<string>();
   const [facilityEmail, setFacilityEmail] = useState<string>();
+  const [facilityLogOnId, setFacilityLogOnId] = useState<string>();
   
   const handleLoginClick = () => {
     //check auth
@@ -113,6 +114,18 @@ export const NewFacility = (props: NewFacilityProps) => {
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 setFacilityName(event.target.value);
               }}
+            />
+          </div>
+          <div className="py-1">
+            <TextField
+              required
+              id="facilityName"
+              label="Facility Log On ID"
+              fullWidth={true}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setFacilityLogOnId(event.target.value);
+              }}
+              helperText='To be used by all members of your facility'
             />
           </div>
           <div className="py-1">
