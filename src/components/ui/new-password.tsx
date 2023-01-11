@@ -4,6 +4,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 type NewPasswordProps = {
   isPasswordConfirmed: (passwordConfirmed: boolean) => void;
+  getPassword: (password: string) => void;
   passwordLabel?: string;
   passwordHelpText?: string;
   confirmPasswordLabel?: string;
@@ -35,6 +36,7 @@ export const NewPassword = (props: NewPasswordProps) => {
   useEffect(() => {
     if (password === confirmPassword) {
       isPasswordConfirmed(true);
+      getPassword(password);
     }
   })
 
