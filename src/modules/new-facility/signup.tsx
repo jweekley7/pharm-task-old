@@ -243,7 +243,7 @@ export const Signup = (props: SignupProps) => {
             <div>
               {!loginWithEmailAndPassword && loginWithGoogle && (
                 <div className='flex flex-col'>
-                  <GoogleSignInButton></GoogleSignInButton>
+                  <GoogleSignInButton/>
                   <div className='flex justify-end'>
                     <Button
                       onClick={() => cancelEmailPasswordSignup()}

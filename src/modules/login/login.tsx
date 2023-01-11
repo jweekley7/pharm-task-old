@@ -5,8 +5,12 @@ import { useState } from "react";
 import { LockClosedIcon } from '@heroicons/react/20/solid';
 import { GoogleSignInButton } from '../../components/ui/google-sign-in-button';
 
+type UserLoginProps = {
+  cancelClicked?: () => void;
+}
 
-export const Login = () => {
+export const UserLogin = (props: UserLoginProps) => {
+  const {cancelClicked} = props;
   const [showPassword, setShowPassword] = useState(false);
   const [facilityLogOnId, setFacilityLogOnId] = useState<string>();
   
@@ -63,10 +67,13 @@ export const Login = () => {
       
     </form>
   )
+
+  const cancelLogin = () => {
+    cancelClicked && cancelClicked()
+  }
   
   return (
     <div>     
-      <>
       {/*
         This example requires updating your template:
 
@@ -75,7 +82,7 @@ export const Login = () => {
         <body class="h-full">
         ```
       */}
-      <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex min-h-full items-center justify-center py-2 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           <div>
             {//TODO: update with logo
@@ -84,7 +91,7 @@ export const Login = () => {
               src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
               alt="Your Company"
             /> */}
-            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+            <h2 className="mt-4 text-center text-3xl font-bold tracking-tight text-gray-900">
               Sign in to your account
             </h2>
             {//TODO: add subtitle?
@@ -95,7 +102,7 @@ export const Login = () => {
               </a>
             </p> */}
           </div>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form className="mt-4 space-y-6" action="#" method="POST">
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
@@ -128,6 +135,7 @@ export const Login = () => {
               </div>
             </div>
 
+            {/* TODO: set this up */}
             <div className="flex items-center justify-between py-2">
               <div className="flex items-center">
                 <input
@@ -161,20 +169,25 @@ export const Login = () => {
             </div>
           </form>
 
-          <div className="flex py-4">
+          <div className="flex items-center py-1">
             <hr className="border w-full"/>
-            <span className="w-full text-center"> Or continue with </span>
+            <span className="w-full text-center min-w-fit px-2"> Or continue with </span>
             <hr className="border w-full"/>
           </div>
 
-          <GoogleSignInButton></GoogleSignInButton>
+          <GoogleSignInButton/>
 
         </div>
       </div>
-    </>
-  )
+      <div className='flex justify-end'>
+        <Button
+          onClick={() => cancelLogin()}
+        >
+          Cancel
+        </Button>
+      </div>
     </div>   
   )
 }
 
-export default Login;
+export default UserLogin;

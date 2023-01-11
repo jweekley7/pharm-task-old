@@ -35,7 +35,7 @@ export const NewPassword = (props: NewPasswordProps) => {
   };
 
   useEffect(() => {
-    if (password === confirmPassword) {
+    if (password && password === confirmPassword) {
       isPasswordConfirmed(true);
       getPassword(password);
     }
