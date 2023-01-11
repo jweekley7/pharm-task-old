@@ -59,14 +59,10 @@ export const NewFacility = (props: NewFacilityProps) => {
     }
   }
 
+  //If user logs in, show create facility screen
   useEffect(() => {
     setShowAccountSignin(!userLoggedIn);
-    console.log('running')
   },[userLoggedIn])
-
-  useEffect(() => {
-    console.log(user?.userEmail)
-  })
     
   return (
     <div>
