@@ -14,6 +14,7 @@ type NewPasswordProps = {
 export const NewPassword = (props: NewPasswordProps) => {
   const {
     isPasswordConfirmed,
+    getPassword,
     passwordLabel,
     passwordHelpText,
     confirmPasswordLabel,
