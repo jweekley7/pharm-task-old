@@ -1,11 +1,10 @@
 import { TextField, Button, ButtonGroup } from "@mui/material";
 import { ChangeEvent, useContext, useState } from "react";
 import { iUser } from "../../models/user";
-import { AuthContext } from "../../providers/auth-provider";
 import { FacilityContext } from "../../providers/facility-provider";
 import { Signup } from './signup';
 import { NewPassword } from '../../components/ui/new-password';
-import { UserLogin } from '../login/login';
+import { UserLogin } from '../login/user-login';
 
 type NewFacilityProps = {
   userLoggedIn: boolean,
@@ -149,15 +148,6 @@ export const NewFacility = (props: NewFacilityProps) => {
               Create Facility
             </Button>
           </div>
-          {/*<button type="button" 
-            onClick={() => {
-              const facilityInput = document.getElementById('facilityName') as HTMLInputElement;
-              const emailInput = document.getElementById('facilityEmail') as HTMLInputElement;
-              preventDuplicateFacilityCreation(facilityInput.value, emailInput.value);
-            }}
-          >
-            Create Facility
-          </button>*/}
         </div>
       )}
     </div>  

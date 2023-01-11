@@ -31,7 +31,7 @@ export const Signup = (props: SignupProps) => {
   //const navigate = useNavigate();
   //const { state }: Location = useLocation();
   //const { mEmail }: any = state;
-  const [userEmail, setUserEmail] = useState<string>(); //mEmail as default state
+  const [userEmail, setUserEmail] = useState<string>();
   //const [profilePic, setProfilePic] = useState<File | undefined>();
   const [fullName, setFullName] = useState<string>();
   //const [termsAgreed, setTermsAgreed] = useState<boolean>(false);

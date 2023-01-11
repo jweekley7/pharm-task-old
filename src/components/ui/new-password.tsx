@@ -21,7 +21,7 @@ export const NewPassword = (props: NewPasswordProps) => {
     confirmPasswordHelpText
   } = props;
   const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState<string | undefined>();
+  const [password, setPassword] = useState<string>();
   const [confirmPassword, setConfirmPassword] = useState<
     string | undefined
   >();

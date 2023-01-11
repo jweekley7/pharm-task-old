@@ -1,11 +1,11 @@
 import './App.scss'
 import Home from '../facilityHome/home';
 import { useContext, useState } from 'react';
-import Login from '../login/login';
 import { FacilityContext } from '../../providers/facility-provider';
 import NewFacility from '../new-facility/new-facility';
 import BasicModal from '../../modals/basic-modal';
 import { AuthContext } from '../../providers/auth-provider';
+import FacilityLogin from '../login/facility-login';
 
 
 export default function App() {
@@ -43,7 +43,7 @@ export default function App() {
             {showLogInModal &&
               <BasicModal
                 headingText='Facility Login'
-                bodyText={<Login/>}
+                bodyText={<FacilityLogin/>}
                 openModal={showLogInModal}
                 closeModal={() => setShowLogInModal(false)}
               />
