@@ -8,6 +8,7 @@ import { GoogleSignInButton } from '../../components/ui/google-sign-in-button';
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [facilityLogOnId, setFacilityLogOnId] = useState<string>();
   
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -26,7 +27,7 @@ export const Login = () => {
         <TextField
           required
           id="filled-required"
-          label="Facility ID"
+          label="Facility Name"
           variant="filled"
           fullWidth={true}
         />
@@ -64,9 +65,7 @@ export const Login = () => {
   )
   
   return (
-    <div>
-      {loginForm}
-      
+    <div>     
       <>
       {/*
         This example requires updating your template:
