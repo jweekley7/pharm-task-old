@@ -3,6 +3,7 @@ import { Button, IconButton, TextField } from "@mui/material";
 import InputAdornment from '@mui/material/InputAdornment';
 import { useState } from "react";
 import { LockClosedIcon } from '@heroicons/react/20/solid';
+import { GoogleSignInButton } from '../../components/ui/google-sign-in-button';
 
 
 export const Login = () => {
@@ -167,9 +168,7 @@ export const Login = () => {
             <hr className="border w-full"/>
           </div>
 
-          <div>
-          {/* TODO: add google login button here */}
-          </div>
+          <GoogleSignInButton></GoogleSignInButton>
 
         </div>
       </div>
