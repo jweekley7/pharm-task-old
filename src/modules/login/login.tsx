@@ -8,8 +8,8 @@ import { GoogleSignInButton } from '../../components/ui/google-sign-in-button';
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();

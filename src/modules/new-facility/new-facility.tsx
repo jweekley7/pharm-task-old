@@ -1,10 +1,11 @@
-import { VisibilityOff, Visibility } from "@mui/icons-material";
-import { TextField, InputAdornment, IconButton, Button, ButtonGroup } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { TextField, Button, ButtonGroup } from "@mui/material";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { iUser } from "../../models/user";
 import { AuthContext } from "../../providers/auth-provider";
 import { FacilityContext } from "../../providers/facility-provider";
 import { Signup } from './signup';
+import { NewPassword } from '../../components/ui/new-password';
+import { Login } from '../login/login';
 
 type NewFacilityProps = {
   userLoggedIn: boolean,
@@ -19,26 +20,27 @@ export const NewFacility = (props: NewFacilityProps) => {
   const { doesFacilityExist, doesAdminUserExistOnAnyFacility } = useContext(FacilityContext);  
   const { signupWithEmailAndPasssword } = useContext(AuthContext);
   const [showAccountSignin, setShowAccountSignin] = useState(!userLoggedIn);
-  const [showSignUpMethods, setShowSignUpMethods] = useState<boolean | undefined>();
+  const [showLogInMethods, setShowLogInMethods] = useState<boolean>();
+  const [showSignUpMethods, setShowSignUpMethods] = useState<boolean>();
+  const [facilityPasswordConfirmed, setFacilityPasswordConfirmed] = useState<boolean>();
+  const [facilityPassword, setFacilityPassword] = useState<string>();
+  const [facilityName, setFacilityName] = useState<string>();
+  const [facilityEmail, setFacilityEmail] = useState<string>();
   
   const handleLoginClick = () => {
     //check auth
-  }
-
-  const handleSignUpClick = () => {
-    setShowSignUpMethods(true);
   }
   
   const preventDuplicateFacilityCreation = async (facilityName: string, userEmail: string) => {
     const facilityNameMatch = await doesFacilityExist(facilityName);
     const userEmailMatch = await doesAdminUserExistOnAnyFacility(userEmail);
 
-    //if facility name matches, throw error?
+    //TODO: if facility name matches, throw error?
     if (facilityNameMatch) {
       console.log('facility match')
     }
 
-    //if user email is admin on any facility, list out facilities and ask if they meant one of those.
+    //TODO: if user email is admin on any facility, list out facilities and ask if they meant one of those.
     //if respose is no, create facility. otherwise have them login to existing facility
     if (userEmailMatch.userMatch) {
       console.log(userEmailMatch.userFacilities)
@@ -49,17 +51,12 @@ export const NewFacility = (props: NewFacilityProps) => {
     //TODO: if user email is linked to another facility, double check to create it first
   }
 
-  const handleSubmit = () => {
-
-  }
-
   const handleBackClicked = () => {
     if (showAccountSignin && !showSignUpMethods) {
       
     }
   }
 
-  //If user logs in, show create facility screen
   useEffect(() => {
     setShowAccountSignin(!userLoggedIn);
   },[userLoggedIn])
@@ -67,7 +64,7 @@ export const NewFacility = (props: NewFacilityProps) => {
   return (
     <div>
       {showAccountSignin ? (
-        !showSignUpMethods ? (
+        !userLoggedIn ? (
           <div className="flex flex-col items-center text-center">
             To create a facility you must have an account. Login or sign up for a new one.
             <ButtonGroup 
@@ -76,81 +73,89 @@ export const NewFacility = (props: NewFacilityProps) => {
               className="mt-4"
             >
               <Button
-                onClick={() => {handleLoginClick()}}
+                onClick={() => {
+                  setShowLogInMethods(true);
+                  setShowSignUpMethods(false);
+                }}
               >
                 Login
               </Button>
               <Button
-                onClick={() => {handleSignUpClick()}}
+                onClick={() => {
+                  setShowSignUpMethods(true);
+                  setShowLogInMethods(false);
+                }}
               >
                 Sign Up
               </Button>
             </ButtonGroup>
           </div>
         ) : (
-          <Signup 
-            cancelClicked={() => setShowSignUpMethods(false)}
-          />
+          <div>
+            {showLogInMethods && !showSignUpMethods && 
+            <Login/>
+            }
+            {!showLogInMethods && showSignUpMethods && (
+            <Signup 
+              cancelClicked={() => setShowSignUpMethods(false)}
+            />
+            }
+          </div>
         )
       ) : (
         <div>
-          <form>
-            <label htmlFor="facilityName">Facility Name</label>
-            <input inputMode="text" id="facilityName" required></input>
-
-            <label htmlFor="facilityEmail">Admin Email</label>
-            <input inputMode="text" id="facilityEmail" required></input>
-            
-            <button type="button" 
+          <div className="py-1">
+            <TextField
+              required
+              id="facilityName"
+              label="Facility Name"
+              fullWidth={true}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setFacilityName(event.target.value);
+              }}
+            />
+          </div>
+          <div className="py-1">
+            <TextField
+              required
+              id="facilityEmail"
+              label="Email"
+              helperText="You will be an admin user for this facility"
+              fullWidth={true}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setFacilityEmail(event.target.value);
+              }}
+            />
+          </div>
+          {/*TODO: hide button until password is confirmed?*/}
+          <NewPassword
+            isPasswordConfirmed={setFacilityPasswordConfirmed}
+            getPassword={setFacilityPassword}
+            passwordLabel='Facility Password'
+            passwordHelpText='To be used by all members of your facility'
+          />
+          {/*TODO: form or no form?*/}
+          <div className="flex justify-end mt-2">
+            <Button 
+              variant="contained" 
               onClick={() => {
-                const facilityInput = document.getElementById('facilityName') as HTMLInputElement;
-                const emailInput = document.getElementById('facilityEmail') as HTMLInputElement;
-                preventDuplicateFacilityCreation(facilityInput.value, emailInput.value)
+                //TODO: prevent duplicate facility creation
+                //TODO: add facility to DB
+                //TODO: navigate to add users page
               }}
             >
               Create Facility
-            </button>
-          </form>
-          <form onSubmit={handleSubmit}>
-            <div className="py-1">
-              <TextField
-                required
-                id="filled-required"
-                label="Facility Name"
-                variant="filled"
-                fullWidth={true}
-              />
-            </div>
-            {/* <div className="py-1">
-              <TextField
-                required
-                id="filled-required"
-                label="Facility Password"
-                type={showPassword ? 'text' : 'password'}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                variant="filled"
-                fullWidth={true}
-              />
-              
-            </div> */}
-            <div className="flex justify-end mt-2">
-              <Button variant="contained" type='submit'>Create Facility</Button>
-            </div>
-          
-          </form>
+            </Button>
+          </div>
+          {/*<button type="button" 
+            onClick={() => {
+              const facilityInput = document.getElementById('facilityName') as HTMLInputElement;
+              const emailInput = document.getElementById('facilityEmail') as HTMLInputElement;
+              preventDuplicateFacilityCreation(facilityInput.value, emailInput.value);
+            }}
+          >
+            Create Facility
+          </button>*/}
         </div>
       )}
     </div>  
