@@ -4,10 +4,20 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 type NewPasswordProps = {
   isPasswordConfirmed: (passwordConfirmed: boolean) => void;
+  passwordLabel?: string;
+  passwordHelpText?: string;
+  confirmPasswordLabel?: string;
+  confirmPasswordHelpText?: string;
 }
 
 export const NewPassword = (props: NewPasswordProps) => {
-  const {isPasswordConfirmed} = props;
+  const {
+    isPasswordConfirmed,
+    passwordLabel,
+    passwordHelpText,
+    confirmPasswordLabel,
+    confirmPasswordHelpText
+  } = props;
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState<string | undefined>();
   const [confirmPassword, setConfirmPassword] = useState<
@@ -33,7 +43,7 @@ export const NewPassword = (props: NewPasswordProps) => {
       <TextField
         required
         id="filled-required"
-        label="Facility Password"
+        label={passwordLabel ?? 'Password'}
         type={showPassword ? 'text' : 'password'}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           setPassword(event.target.value);
@@ -54,11 +64,12 @@ export const NewPassword = (props: NewPasswordProps) => {
         }}
         variant="filled"
         fullWidth={true}
+        helperText={passwordHelpText ?? ''}
       />
       <TextField
         required
         id="filled-required"
-        label="Confirm Password"
+        label={confirmPasswordLabel ?? 'Password'}
         type={showPassword ? 'text' : 'password'}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           setConfirmPassword(event.target.value);
@@ -79,6 +90,7 @@ export const NewPassword = (props: NewPasswordProps) => {
         }}
         variant="filled"
         fullWidth={true}
+        helperText={confirmPasswordHelpText ?? ''}
       />
     </div>   
   )
