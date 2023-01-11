@@ -23,12 +23,10 @@ export const Signup = (props: SignupProps) => {
   const {adminUser, cancelClicked} = props;
   const userService = new UserService();
   const {
-    isLoggedIn,
     currentUser,
     signupWithEmailAndPasssword,
     signInWithGoogle,
     updateLoginStatus,
-    userLogOut,
   } = useContext(AuthContext);
   //const navigate = useNavigate();
   //const { state }: Location = useLocation();
