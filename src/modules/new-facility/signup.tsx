@@ -3,8 +3,7 @@ import { AuthContext } from '../../providers/auth-provider';
 import { UserService } from '../../services/user-service';
 import { iUser } from '../../models/user';
 import { Link, useLocation, useNavigate, Location } from 'react-router-dom';
-import GoogleIcon from '@mui/icons-material/Google';
-
+import { GoogleSignInButton } from '../../components/ui/google-sign-in-button';
 import {
   EmailAuthProvider,
   linkWithCredential,
@@ -112,25 +111,25 @@ export const Signup = (props: SignupProps) => {
     }
   };
 
-  const handleGoogleLoginClick = async () => {
-    try {
-      await signInWithGoogle();
+  // const handleGoogleLoginClick = async () => {
+  //   try {
+  //     await signInWithGoogle();
 
-      if (isLoggedIn) {
-        console.log('now = ' + isLoggedIn)
-      }
+  //     if (isLoggedIn) {
+  //       console.log('now = ' + isLoggedIn)
+  //     }
 
-      try {
-        console.log('user logged in')
+  //     try {
+  //       console.log('user logged in')
         
-      } catch (error) {
-        console.log('Trouble confirming login: ', error)
-      }
+  //     } catch (error) {
+  //       console.log('Trouble confirming login: ', error)
+  //     }
 
-    } catch (error) {
-      console.log('Trouble logging in with google: ', error);
-    }
-  }
+  //   } catch (error) {
+  //     console.log('Trouble logging in with google: ', error);
+  //   }
+  // }
 
   // const navigateToCorrectPage = async () => {
   //   if (isLoggedIn) {
@@ -324,24 +323,7 @@ export const Signup = (props: SignupProps) => {
             <div>
               {!loginWithEmailAndPassword && loginWithGoogle && (
                 <div className='flex flex-col'>
-                  <div
-                    className='flex justify-center'
-                  >
-                    <Button
-                      variant="contained"
-                      onClick={async () => {
-                        await handleGoogleLoginClick();
-
-                      }}
-                    >
-                      <GoogleIcon></GoogleIcon>
-                      <span
-                        className='pl-2'
-                      >
-                        Sign up with Google
-                      </span>
-                    </Button>
-                  </div>
+                  <GoogleSignInButton></GoogleSignInButton>
                   <div className='flex justify-end'>
                     <Button
                       onClick={() => cancelEmailPasswordSignup()}
