@@ -9,8 +9,8 @@ import FacilityLogin from '../login/facility-login';
 
 
 export default function App() {
-  const {isLoggedIn, userDetails, userLogOut} = useContext(AuthContext)
-  const [facilityLoggedIn, setFacilityLoggedIn] = useState(false);
+  const {isLoggedIn, userDetails, userLogOut} = useContext(AuthContext);
+  const {currentFacility} = useContext(FacilityContext);
   const [showLogInModal, setShowLogInModal] = useState(false);
   const [showCreateFacilityModal, setShowCreateFacilityModal] = useState(false);
   //TODO: check for current login. if not logged in, show welcome page with login options.
@@ -18,19 +18,18 @@ export default function App() {
 
 
   const showAccountLogInModal = () => {
-    setShowLogInModal(true)
-    setShowCreateFacilityModal(false)
+    setShowLogInModal(true);
+    setShowCreateFacilityModal(false);
   }
 
   const showCreateFacilityAccountModal = () => {
-    setShowCreateFacilityModal(true)
-    setShowLogInModal(false)
+    setShowCreateFacilityModal(true);
+    setShowLogInModal(false);
   }
-
 
   return (
     <main>
-      {facilityLoggedIn ? 
+      {currentFacility ? 
         <Home/> : 
         <div>
           <div className="text-3xl font-bold underline">Welcome to checklist.</div>
@@ -43,7 +42,11 @@ export default function App() {
             {showLogInModal &&
               <BasicModal
                 headingText='Facility Login'
-                bodyText={<FacilityLogin/>}
+                bodyText={
+                  <FacilityLogin
+                    onLoginSuccess={() => setShowLogInModal(false)}
+                  />
+                }
                 openModal={showLogInModal}
                 closeModal={() => setShowLogInModal(false)}
               />
@@ -57,7 +60,7 @@ export default function App() {
                   <NewFacility
                     userLoggedIn={isLoggedIn}
                     user={userDetails}
-                    setFacilityLoggedIn={setFacilityLoggedIn}
+                    onCreateFacilitySuccess={() => setShowCreateFacilityModal(false)}
                   />
                 }
                 openModal={showCreateFacilityModal}

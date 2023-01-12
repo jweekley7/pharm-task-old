@@ -10,14 +10,14 @@ import { iNewFacility } from "../../models/facility";
 type NewFacilityProps = {
   userLoggedIn: boolean,
   user: iUser | null,
-  setFacilityLoggedIn: (facilityLoggedIn: boolean) => void;
+  onCreateFacilitySuccess: () => void;
 }
 
 export const NewFacility = (props: NewFacilityProps) => {
   const {
     userLoggedIn,
     user,
-    setFacilityLoggedIn
+    onCreateFacilitySuccess,
   } = props;
   const { 
     createNewFacility, 
@@ -47,7 +47,7 @@ export const NewFacility = (props: NewFacilityProps) => {
 
         try {
           await createNewFacility(newFacility, [facilityAdminEmail]);
-          setFacilityLoggedIn(true);
+          onCreateFacilitySuccess();
 
           //TODO: navigate to dashboard
         } catch (error) {

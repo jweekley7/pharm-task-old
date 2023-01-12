@@ -6,8 +6,8 @@ export interface iFacility {
   logOnID: string;
   logOnPassWord: string;
   facilityAdminEmails: string[];
-  checklist: iChecklist[];
-  userEmails: string[];
+  checklist?: iChecklist[];
+  userEmails?: string[];
 }
 
 export interface iNewFacility {

@@ -11,12 +11,12 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <UserProvider>
-        <FacilityProvider>
+    <FacilityProvider>
+      <AuthProvider>
+        <UserProvider>
           <App />
-        </FacilityProvider>
-      </UserProvider>
-    </AuthProvider>
+        </UserProvider>
+      </AuthProvider>
+    </FacilityProvider>
   </React.StrictMode>
 );

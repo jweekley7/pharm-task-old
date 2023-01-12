@@ -7,7 +7,7 @@ type FacilityProviderProps = {
 };
 
 type FacilityContextProps = {
-  currentFacility?: iFacility | iNewFacility;
+  currentFacility?: iFacility | null | undefined;
   doesFacilityAlreadyExist: (newFacility: iNewFacility) => Promise<boolean>
   getFacilityFromId: (facilityId: string) => Promise<void>;
   createNewFacility: (
@@ -18,13 +18,18 @@ type FacilityContextProps = {
     facilityName: string, 
     facilityLogOnId: string, 
   ) => Promise<boolean>;
+  facilityLogIn: (
+    logOnId: string, 
+    facilityPassword: string
+  ) => Promise<void>;
+  facilityLogOut: () => void;
 }
 
 export const FacilityContext = React.createContext({} as FacilityContextProps);
 
 const FacilityProvider = ({ children }: FacilityProviderProps) => {
   const _facilityService = new FacilityService();
-  const [currentFacility, setCurrentFacility] = useState<iFacility | iNewFacility>();
+  const [currentFacility, setCurrentFacility] = useState<iFacility | null>();
   
   const getFacilityFromId = async (facilityId: string) => {
     const facility = await _facilityService.getFacilityByIdDB(facilityId);
@@ -55,8 +60,8 @@ const FacilityProvider = ({ children }: FacilityProviderProps) => {
   ) => {
     
     try {
-      await _facilityService.addNewFacility(newFacility, facilityAdminEmails);
-      setCurrentFacility(newFacility);
+      const facility = await _facilityService.addNewFacility(newFacility, facilityAdminEmails);
+      setCurrentFacility(facility);
     
     } catch (error) {
       
@@ -64,6 +69,40 @@ const FacilityProvider = ({ children }: FacilityProviderProps) => {
       console.log('Trouble creating facility: ', error)
     }
   }
+
+  const facilityLogOut = () => {
+    setCurrentFacility(null);
+  };
+
+  const facilityLogIn = async (logOnId: string, facilityPassword: string) => {
+    //get facility by logOnId
+    const facility = await _facilityService.getFacilityByLogOnId(logOnId);
+
+    //verify password matches
+    if (facility?.logOnPassWord === facilityPassword) {
+
+      setCurrentFacility(facility);
+      console.log('login successful')
+    }
+  }
+
+  // const completeOrUpdateFacilityProfile = async (newFacility?: iNewFacility, existingFacility?: iFacility, userEmails?: string[], adminEmails?: string[]) => {
+    
+  //   let updatedFacilityProfile: iFacility;
+    
+  //   if (newFacility) {
+
+  //     updatedFacilityProfile = {
+  //       facilityId: newFacility
+  //     }
+
+  //   }
+
+  //   if (existingFacility) {
+
+  //   }
+    
+  // }
 
   const checkForDuplicateFacility = async (
     facilityName: string, 
@@ -89,6 +128,8 @@ const FacilityProvider = ({ children }: FacilityProviderProps) => {
         getFacilityFromId,
         createNewFacility,
         checkForDuplicateFacility,
+        facilityLogIn,
+        facilityLogOut,
       }}
     >
       {children}

@@ -43,12 +43,42 @@ export class FacilityService {
     facilityAdminEmails: string[], 
   ) => {
     const facilityRef = doc(this._DBFacilitiesCollection);
-    await setDoc(facilityRef, {
+
+    const facilityDb: iFacility = {
+      facilityId: facilityRef.id,
       facilityName: newFacility.facilityName,
       logOnID: newFacility.logOnID,
       logOnPassWord: newFacility.logOnPassWord,
-      facilityAdminEmails: facilityAdminEmails,
-    })
+      facilityAdminEmails: facilityAdminEmails,     
+    }
+  
+    try {
+      await setDoc(facilityRef, facilityDb);
+
+      return facilityDb;
+
+    } catch (error) {
+      console.log('Could not add facility to DB: ', error);
+    }  
+  }
+
+  //Need to complete facility type on DB for correct typing
+  public getFacilityByLogOnId = async (logOnId: string) => {
+    const querySnapshot = await getDocs(this._DBFacilitiesCollection);
+    
+    let matchedFacility: iFacility | undefined;
+
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      const facility = doc.data() as iFacility;
+
+      if (facility.logOnID === logOnId) {
+        matchedFacility = facility;
+      }
+      
+    });
+
+    return matchedFacility;
   }
 
 }

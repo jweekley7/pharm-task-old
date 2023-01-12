@@ -1,10 +1,23 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Button, IconButton, TextField } from "@mui/material";
 import InputAdornment from '@mui/material/InputAdornment';
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { LockClosedIcon } from '@heroicons/react/20/solid';
+import { FacilityContext } from '../../providers/facility-provider';
+import { iFacility, iNewFacility } from '../../models/facility';
 
-export const FacilityLogin = () => {
+type FacilityLoginProps = {
+  // checkFacilityLoginStatus: (isFacilityLoggedIn: boolean) => void;
+  // loggedInFacility: (loggedInFacility: iFacility | iNewFacility) => void;
+  onLoginSuccess: () => void;
+}
+
+export const FacilityLogin = (props: FacilityLoginProps) => {
+  // const {checkFacilityLoginStatus, loggedInFacility} = props;
+  const {onLoginSuccess} = props;
+
+  const {currentFacility, facilityLogIn} = useContext(FacilityContext);
+
   const [showPassword, setShowPassword] = useState(false);
   const [facilityLogOnId, setFacilityLogOnId] = useState<string>();
   const [password, setPassword] = useState<string>();
@@ -15,8 +28,14 @@ export const FacilityLogin = () => {
     event.preventDefault();
   };
 
-  const handleFacilityLogin = () => {
+  const handleFacilityLogin = async () => {
     //Login with facilityLogOnId & password
+
+    if (facilityLogOnId && password) {
+      
+      await facilityLogIn(facilityLogOnId, password);
+      onLoginSuccess();
+    }   
   }
   
   return (
@@ -49,13 +68,13 @@ export const FacilityLogin = () => {
               </a>
             </p> */}
           </div>
-          <form className="mt-4 space-y-6" action="#" method="POST">
+          <div>
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <TextField
                 required
                 id="filled-required"
-                label="Facility Name"
+                label="Facility Login ID"
                 variant="filled"
                 fullWidth={true}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -118,7 +137,7 @@ export const FacilityLogin = () => {
                 type="submit"
                 variant='contained'
                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                onClick={() => handleFacilityLogin()}
+                onClick={() => {handleFacilityLogin()}}
               >
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                   <LockClosedIcon className="h-5 w-5 text-white" aria-hidden="true" />
@@ -126,7 +145,7 @@ export const FacilityLogin = () => {
                 Sign in
               </Button>
             </div>
-          </form>
+          </div>
 
         </div>
       </div>

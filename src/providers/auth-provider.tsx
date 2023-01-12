@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { iFacility } from "../models/facility";
 import { FacilityService } from "../services/facility-service";
 import {
@@ -22,6 +22,7 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore } from "firebase/firestore";
 import { iUser } from "../models/user";
 import { UserService } from "../services/user-service";
+import { FacilityContext } from "./facility-provider";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -58,7 +59,7 @@ type AuthContextProps = {
 export const AuthContext = React.createContext({} as AuthContextProps);
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [currentFacility, setCurrentFacility] = useState<iFacility | null>(null);
+  const {facilityLogOut} = useContext(FacilityContext);
   const DBAuth = getAuth();
   const googleAuthProvider = new GoogleAuthProvider();
   const [isFacilityLoggedIn, setIsFacilityLoggedIn] = useState(false);
@@ -70,17 +71,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   // const [superAdminStatus, setSuperAdminStatus] = useState(false);
   // const [leagueOwnerStatus, setLeagueOwnerStatus] = useState(false);
   
-  const facilityLogOut = async () => {
-    await userLogOut();
-    setCurrentFacility(null);
-    setIsFacilityLoggedIn(false);
-  }
-  
   const userLogOut = async () => {
     await signOut(DBAuth);
     setIsLoggedIn(false);
     setCurrentUser(null);
     setUserDetails(null);
+    facilityLogOut();
   };
 
   // const loginWithEmailAndPasssword = async (
