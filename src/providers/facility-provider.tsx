@@ -1,6 +1,5 @@
-import React, { ReactNode, useEffect, useState } from "react";
-import { iFacility } from "../models/facility";
-import { iUser } from "../models/user";
+import React, { ReactNode, useState } from "react";
+import { iFacility, iNewFacility } from "../models/facility";
 import { FacilityService } from "../services/facility-service";
 
 type FacilityProviderProps = {
@@ -8,49 +7,78 @@ type FacilityProviderProps = {
 };
 
 type FacilityContextProps = {
-  currentFacility?: iFacility;
-  doesFacilityAlreadyExist: (facilityName?: string) => Promise<boolean>
+  currentFacility?: iFacility | iNewFacility;
+  doesFacilityAlreadyExist: (newFacility: iNewFacility) => Promise<boolean>
   getFacilityFromId: (facilityId: string) => Promise<void>;
-  doesAdminUserExistOnAnyFacility: (user: iUser) => Promise<{
-    userMatch: boolean;
-    userFacilities: string[];
-  }>
+  createNewFacility: (
+    newFacility: iNewFacility, 
+    facilityAdminEmails: string[], 
+  ) => Promise<void>;
+  checkForDuplicateFacility: (
+    facilityName: string, 
+    facilityLogOnId: string, 
+  ) => Promise<boolean>;
 }
 
 export const FacilityContext = React.createContext({} as FacilityContextProps);
 
 const FacilityProvider = ({ children }: FacilityProviderProps) => {
   const _facilityService = new FacilityService();
-  const [currentFacility, setCurrentFacility] = useState<iFacility>();
+  const [currentFacility, setCurrentFacility] = useState<iFacility | iNewFacility>();
   
   const getFacilityFromId = async (facilityId: string) => {
     const facility = await _facilityService.getFacilityByIdDB(facilityId);
     setCurrentFacility(facility);
   }
 
-  const doesFacilityAlreadyExist = async (facilityName?: string) => {
+  const doesFacilityAlreadyExist = async (newFacility: iNewFacility) => {
     const allFacilities = await _facilityService.getAllFacilitiesFromDB();
+
     let facilityMatch = false;
+
     allFacilities.forEach((facility) => {
-      if (facility.facilityName === facilityName) {
+      if (facility.facilityName === newFacility.facilityName) {
+        facilityMatch = true;
+      }
+
+      if (facility.logOnID === newFacility.logOnID) {
         facilityMatch = true;
       }
     })
+  
     return facilityMatch
   };
 
-  const doesAdminUserExistOnAnyFacility = async (user: iUser) => {
-    const allFacilities = await _facilityService.getAllFacilitiesFromDB();
-    let userMatch = false;
-    const userFacilities: string[] = [];
-    allFacilities.forEach((facility) => {
-      if (facility.facilityAdmin.includes(user)) {
-        userMatch = true;
-        userFacilities.push(facility.facilityName)
-      }
-    })
+  const createNewFacility = async (
+    newFacility: iNewFacility, 
+    facilityAdminEmails: string[], 
+  ) => {
+    
+    try {
+      await _facilityService.addNewFacility(newFacility, facilityAdminEmails);
+      setCurrentFacility(newFacility);
+    
+    } catch (error) {
+      
+      //TODO: display error message to user 
+      console.log('Trouble creating facility: ', error)
+    }
+  }
 
-    return {userMatch, userFacilities}
+  const checkForDuplicateFacility = async (
+    facilityName: string, 
+    facilityLogOnId: string, 
+  ) => {
+
+    const newFacility: iNewFacility = {
+      facilityName: facilityName,
+      logOnID: facilityLogOnId,
+      logOnPassWord: '',
+    }
+
+    const facilityMatch = await doesFacilityAlreadyExist(newFacility);
+
+    return facilityMatch;
   }
   
   return (
@@ -59,7 +87,8 @@ const FacilityProvider = ({ children }: FacilityProviderProps) => {
         currentFacility,
         doesFacilityAlreadyExist,
         getFacilityFromId,
-        doesAdminUserExistOnAnyFacility,
+        createNewFacility,
+        checkForDuplicateFacility,
       }}
     >
       {children}

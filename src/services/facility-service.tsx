@@ -15,7 +15,8 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import {DBCollections} from "../utils/constants";
-import { iFacility } from '../models/facility';
+import { iFacility, iNewFacility } from '../models/facility';
+import { iUser } from '../models/user';
 
 
 export class FacilityService {
@@ -35,6 +36,19 @@ export class FacilityService {
       allFacilities.push(facility);
     });
     return allFacilities;
+  }
+
+  public addNewFacility = async (
+    newFacility: iNewFacility, 
+    facilityAdminEmails: string[], 
+  ) => {
+    const facilityRef = doc(this._DBFacilitiesCollection);
+    await setDoc(facilityRef, {
+      facilityName: newFacility.facilityName,
+      logOnID: newFacility.logOnID,
+      logOnPassWord: newFacility.logOnPassWord,
+      facilityAdminEmails: facilityAdminEmails,
+    })
   }
 
 }

@@ -5,45 +5,56 @@ import { FacilityContext } from "../../providers/facility-provider";
 import { Signup } from './signup';
 import { NewPassword } from '../../components/ui/new-password';
 import { UserLogin } from '../login/user-login';
+import { iNewFacility } from "../../models/facility";
 
 type NewFacilityProps = {
   userLoggedIn: boolean,
   user: iUser | null,
+  setFacilityLoggedIn: (facilityLoggedIn: boolean) => void;
 }
 
 export const NewFacility = (props: NewFacilityProps) => {
   const {
-    userLoggedIn, 
-    user, 
+    userLoggedIn,
+    user,
+    setFacilityLoggedIn
   } = props;
-  const { doesFacilityAlreadyExist, doesAdminUserExistOnAnyFacility } = useContext(FacilityContext);  
+  const { 
+    createNewFacility, 
+    checkForDuplicateFacility 
+  } = useContext(FacilityContext);  
   const [showLogInMethods, setShowLogInMethods] = useState<boolean>();
   const [showSignUpMethods, setShowSignUpMethods] = useState<boolean>();
   const [needAccountPrompt, setNeedAccountPrompt] = useState<boolean>(true);
-  const [facilityPasswordConfirmed, setFacilityPasswordConfirmed] = useState<boolean>();
+  const [facilityPasswordConfirmed, setFacilityPasswordConfirmed] = useState<boolean>(); //TODO: disable button if false
   const [facilityPassword, setFacilityPassword] = useState<string>();
   const [facilityName, setFacilityName] = useState<string>();
-  const [facilityEmail, setFacilityEmail] = useState<string>();
+  const [facilityAdminEmail, setFacilityAdminEmail] = useState<string>();
   const [facilityLogOnId, setFacilityLogOnId] = useState<string>();
   
-  const preventDuplicateFacilityCreation = async (facilityName: string, userEmail: string) => {
-    const facilityNameMatch = await doesFacilityAlreadyExist(facilityName);
-    // const userEmailMatch = await doesAdminUserExistOnAnyFacility(userEmail);
+  const handleCreateFacilityClick = async () => {
+    if (facilityName && facilityLogOnId && facilityPassword && facilityAdminEmail) {
+      console.log('click successful');
+      const duplicateFacility = await checkForDuplicateFacility(facilityName, facilityLogOnId);
 
-    // //TODO: if facility name matches, throw error?
-    // if (facilityNameMatch) {
-    //   console.log('facility match')
-    // }
+      if (!duplicateFacility) {
 
-    // //TODO: if user email is admin on any facility, list out facilities and ask if they meant one of those.
-    // //if respose is no, create facility. otherwise have them login to existing facility
-    // if (userEmailMatch.userMatch) {
-    //   console.log(userEmailMatch.userFacilities)
-    // }
+        const newFacility: iNewFacility = {
+          facilityName: facilityName,
+          logOnID: facilityLogOnId,
+          logOnPassWord: facilityPassword,
+        }
 
+        try {
+          await createNewFacility(newFacility, [facilityAdminEmail]);
+          setFacilityLoggedIn(true);
 
-    //TODO: if facility doesn't exist in DB, create it
-    //TODO: if user email is linked to another facility, double check to create it first
+          //TODO: navigate to dashboard
+        } catch (error) {
+          console.log('Error creating facility: ', error)
+        }
+      }
+    }    
   }
     
   return (
@@ -109,11 +120,13 @@ export const NewFacility = (props: NewFacilityProps) => {
               required
               id="facilityEmail"
               label="Email"
-              helperText="You will be an admin user for this facility"
+              helperText="Please enter your email. You will be an admin user for this facility"
               fullWidth={true}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                setFacilityEmail(event.target.value);
+                setFacilityAdminEmail(event.target.value);
               }}
+              // TODO: get default value working
+              defaultValue={user?.userEmail}
             />
           </div>
           <div className="py-1">
@@ -140,9 +153,8 @@ export const NewFacility = (props: NewFacilityProps) => {
             <Button 
               variant="contained" 
               onClick={() => {
-                //TODO: prevent duplicate facility creation
-                //TODO: add facility to DB
-                //TODO: navigate to add users page
+                //TODO: navigate to dashboard
+                handleCreateFacilityClick();
               }}
             >
               Create Facility

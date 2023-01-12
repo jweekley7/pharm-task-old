@@ -11,7 +11,7 @@ export const Home = () => {
       <a>LogOut</a>
 
       {/*Just for testing to see if current facility is accurate*/}
-      <h1>currentFacility</h1>
+      <h1>{currentFacility?.facilityName}</h1>
     </div>
   )
 }

@@ -31,7 +31,7 @@ export default function App() {
   return (
     <main>
       {facilityLoggedIn ? 
-        <Home></Home> : 
+        <Home/> : 
         <div>
           <div className="text-3xl font-bold underline">Welcome to checklist.</div>
           <div>Existing Facility? Login <a className='cursor-pointer' onClick={() => showAccountLogInModal()}>here</a></div>
@@ -57,6 +57,7 @@ export default function App() {
                   <NewFacility
                     userLoggedIn={isLoggedIn}
                     user={userDetails}
+                    setFacilityLoggedIn={setFacilityLoggedIn}
                   />
                 }
                 openModal={showCreateFacilityModal}
