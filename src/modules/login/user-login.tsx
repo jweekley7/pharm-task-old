@@ -176,11 +176,13 @@ export const UserLogin = (props: UserLoginProps) => {
         </div>
       </div>
       <div className='flex justify-end'>
-        <Button
-          onClick={() => cancelLogin()}
-        >
-          Cancel
-        </Button>
+        { cancelClicked && 
+          <Button
+            onClick={() => cancelLogin()}
+          >
+            Cancel
+          </Button>
+        }
       </div>
     </div>   
   )
