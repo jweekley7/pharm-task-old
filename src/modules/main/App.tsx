@@ -43,43 +43,43 @@ export default function App() {
     <main>
       {currentFacility ? 
         <Home/> : 
-        <div>
-          <div className="text-3xl font-bold underline">Welcome to PharmTask!</div>
+        <div className='flex flex-col text-center'>
+          <div className="text-3xl font-bold my-8">PharmTask</div>
           <div className='flex mx-6 space-x-4 my-6'>
             <Card 
-              sx={{ minWidth: 225 }}
+              sx={{ minWidth: 225, maxWidth: 225 }}
               onClick={() => showAccountLogInModal()}
               className='cursor-pointer hover:transition hover:duration-300 hover:scale-110 text-center'
             >
               <CardContent>
                 <div>
-                  <p>Existing Facility?</p> 
+                  <p>Login to your facility to complete your tasks</p> 
                   <p>Login <a className='cursor-pointer' onClick={() => showAccountLogInModal()}>here</a></p>
                 </div>
               </CardContent>
             </Card>
             
             <Card 
-              sx={{ minWidth: 225 }}
+              sx={{ minWidth: 225, maxWidth: 225 }}
               onClick={() => showFacilityAdminLoginModal()}
               className='cursor-pointer hover:transition hover:duration-300 hover:scale-110 text-center'
             >
               <CardContent>
                 <div>
-                  <p>Facility Admin?</p>
+                  <p>Login to your user account</p>
                   <p>Login <a className='cursor-pointer' onClick={() => showFacilityAdminLoginModal()}>here</a></p>
                 </div>
               </CardContent>
             </Card>
 
             <Card               
-              sx={{ minWidth: 225 }}
+              sx={{ minWidth: 225, maxWidth: 225 }}
               onClick={() => showCreateFacilityAccountModal()}
               className='cursor-pointer hover:transition hover:duration-300 hover:scale-110 text-center'
             >
               <CardContent>
                 <div>
-                  <p>New Facility?</p> 
+                  <p>Create a new facility</p> 
                   <p>Create Account 
                     <a className='cursor-pointer' onClick={() => showCreateFacilityAccountModal()}> here</a>
                   </p>
@@ -133,7 +133,10 @@ export default function App() {
       }
       
       {/* For testing only */}
-      <a onClick={userLogOut}>Log Out</a>
+      {isLoggedIn && 
+        <a className='cursor-pointer' onClick={userLogOut}>Log Out</a>
+      }
+      
       
     </main>
   )

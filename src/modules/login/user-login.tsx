@@ -1,16 +1,20 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Button, IconButton, TextField } from "@mui/material";
 import InputAdornment from '@mui/material/InputAdornment';
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { LockClosedIcon } from '@heroicons/react/20/solid';
 import { GoogleSignInButton } from '../../components/ui/google-sign-in-button';
+import { AuthContext } from '../../providers/auth-provider';
 
 type UserLoginProps = {
   cancelClicked?: () => void;
 }
 
 export const UserLogin = (props: UserLoginProps) => {
-  const {cancelClicked} = props;
+  const {
+    cancelClicked,
+  } = props;
+  const {loginWithEmailAndPasssword} = useContext(AuthContext)
   const [showPassword, setShowPassword] = useState(false);
   const [userEmail, setUserEmail] = useState<string>();
   const [password, setPassword] = useState<string | undefined>();
@@ -25,8 +29,14 @@ export const UserLogin = (props: UserLoginProps) => {
     cancelClicked && cancelClicked()
   }
 
-  const handleEmailPasswordLogin = () => {
-    //Login with userEmail & password
+  const handleEmailPasswordLoginClick = () => {
+    //TODO: load when clicked
+    // setLoginLoading(true);
+    
+    if (userEmail && password) {
+      loginWithEmailAndPasssword(userEmail, password);
+    }
+
   }
   
   return (
@@ -59,7 +69,7 @@ export const UserLogin = (props: UserLoginProps) => {
               </a>
             </p> */}
           </div>
-          <form className="mt-4" action="#" method="POST">
+          <div className="mt-4">
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               {/* <div>
@@ -155,7 +165,7 @@ export const UserLogin = (props: UserLoginProps) => {
                 type="submit"
                 variant='contained'
                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                onClick={() => handleEmailPasswordLogin()}
+                onClick={() => handleEmailPasswordLoginClick()}
               >
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                   <LockClosedIcon className="h-5 w-5 text-white" aria-hidden="true" />
@@ -163,7 +173,7 @@ export const UserLogin = (props: UserLoginProps) => {
                 Sign in
               </Button>
             </div>
-          </form>
+          </div>
 
           <div className="flex items-center py-1">
             <hr className="border w-full"/>

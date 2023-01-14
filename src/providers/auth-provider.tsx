@@ -42,10 +42,10 @@ type AuthContextProps = {
     email: string,
     password: string
   ) => Promise<UserCredential>;
-  // loginWithEmailAndPasssword: (
-  //   email: string,
-  //   password: string
-  // ) => Promise<UserCredential>;
+  loginWithEmailAndPasssword: (
+    email: string,
+    password: string
+  ) => Promise<UserCredential>;
   // sendResetPasswordEmail: (email: string) => Promise<void>;
   // verifyResetPasswordCode: (code: string) => Promise<string>;
   // resetPassword: (code: string, password: string) => Promise<void>;
@@ -79,18 +79,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     facilityLogOut();
   };
 
-  // const loginWithEmailAndPasssword = async (
-  //   email: string,
-  //   password: string
-  // ) => {
-  //   const signinCreds = await signInWithEmailAndPassword(
-  //     DBAuth,
-  //     email,
-  //     password
-  //   );
-  //   updateLoginStatus(signinCreds.user);
-  //   return signinCreds;
-  // };
+  const loginWithEmailAndPasssword = async (
+    email: string,
+    password: string
+  ) => {
+    const signinCreds = await signInWithEmailAndPassword(
+      DBAuth,
+      email,
+      password
+    );
+    updateLoginStatus(signinCreds.user);
+    return signinCreds;
+  };
 
   const signupWithEmailAndPasssword = async (
     email: string,
@@ -179,6 +179,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         isLoggedIn,
         signInWithGoogle,
         userLogOut,
+        loginWithEmailAndPasssword,
       }}
     >
       {children}
